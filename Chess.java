@@ -1,3 +1,7 @@
+/* Chessboard Evaluator
+ * 01/20/15
+ * Andrew Seitz
+ */
 package seitz;
 
 import java.util.ArrayList;
@@ -11,7 +15,6 @@ public class Chess
 		int kingsLeft = 2; // There will always be either 2 or no kings
 		int i = -1, j = -1;
 		ArrayList<Piece> kingList = new ArrayList<Piece>();
-		ArrayList<Piece> checkList = new ArrayList<Piece>();
 
 		// Construct a list of all kings ============== //
 		for (char[] row : board)
@@ -25,10 +28,8 @@ public class Chess
 					if (piece == 'k' || piece == 'K')
 					{
 						// Run a check on any pieces possibly checking
-						System.out.println("King found " + kingsLeft);
 						kingsLeft--;
 						kingList.add(new Piece(piece, i, j));
-						// output = testForCheck(piece, board, i, j);
 					}
 				}
 				j = -1;
@@ -36,8 +37,6 @@ public class Chess
 		}
 
 		char firstKingChecker;
-		// char secondKingChecker;
-		// If no kings are found: done, return '-'
 		if (kingsLeft > 0)
 		{
 			return output;
@@ -61,11 +60,11 @@ public class Chess
 	 * 
 	 * Pre: a character 'k' or 'K' to indicate white or black
 	 * 
-	 * Post: a character representing a piece that is checking this king
+	 * Post: a character representing a piece that is checking this king or '-'
+	 * to indicate no check found
 	 */
-	@SuppressWarnings("unchecked")
+
 	private static char testForCheck(Piece king, char[][] board)
-//			ArrayList<Piece> checkList)
 	{
 		// List of possible opponent categories
 		String crossOpponents, diagOpponents1, diagOpponents2;
@@ -84,24 +83,7 @@ public class Chess
 			diagOpponents1 = "BPQ";
 			diagOpponents2 = "BQ";
 			knights = 'N';
-			if (king.equals('k'))
-			{
-				System.out.println(" it's a k");
-			}
 		}
-
-		// Begin building list of possible check pieces:
-//		checkList = new ArrayList<Piece>();
-
-		// Find any opponent pieces horizontal to King
-		// for (char piece : board[king.getRow()])
-		// {
-		// if (piece != '.' && opponents.indexOf(piece) != -1)
-		// {
-		// checkList.add(new Piece(piece, i, j));
-		// System.out.println(checkList.toString());
-		// }
-		// }
 
 		/*
 		 * With the exception of the knight pieces can only check a king through
@@ -122,7 +104,6 @@ public class Chess
 			{
 				if (crossOpponents.indexOf(evaluatingPiece) != -1) // Opponent
 				{
-//					checkList.add(new Piece(evaluatingPiece, i, king.getRow()));
 					outputPiece = evaluatingPiece;
 				}
 				// Whether it is an opponent or not
@@ -141,10 +122,8 @@ public class Chess
 			{
 				if (crossOpponents.indexOf(evaluatingPiece) != -1)
 				{
-//					checkList.add(new Piece(evaluatingPiece, i, king.getRow()));
 					outputPiece = evaluatingPiece;
 				}
-				// Whether it is an opponent or not
 				completed = true;
 			}
 		}
@@ -160,10 +139,8 @@ public class Chess
 			{
 				if (crossOpponents.indexOf(evaluatingPiece) != -1)
 				{
-//					checkList.add(new Piece(evaluatingPiece, i, king.getRow()));
 					outputPiece = evaluatingPiece;
 				}
-				// Whether it is an opponent or not
 				completed = true;
 			}
 		}
@@ -179,10 +156,8 @@ public class Chess
 			{
 				if (crossOpponents.indexOf(evaluatingPiece) != -1)
 				{
-//					checkList.add(new Piece(evaluatingPiece, i, king.getRow()));
 					outputPiece = evaluatingPiece;
 				}
-				// Whether it is an opponent or not
 				completed = true;
 			}
 		}
@@ -206,14 +181,12 @@ public class Chess
 				case 1:
 					if (diagOpponents1.indexOf(evaluatingPiece) != -1)
 					{
-//						checkList.add(new Piece(evaluatingPiece, i, j));
 						outputPiece = evaluatingPiece;
 					}
 					break;
 				default:
 					if (diagOpponents2.indexOf(evaluatingPiece) != -1)
 					{
-//						checkList.add(new Piece(evaluatingPiece, i, j));
 						outputPiece = evaluatingPiece;
 					}
 					break;
@@ -241,14 +214,12 @@ public class Chess
 				case 1:
 					if (diagOpponents1.indexOf(evaluatingPiece) != -1)
 					{
-//						checkList.add(new Piece(evaluatingPiece, i, j));
 						outputPiece = evaluatingPiece;
 					}
 					break;
 				default:
 					if (diagOpponents2.indexOf(evaluatingPiece) != -1)
 					{
-//						checkList.add(new Piece(evaluatingPiece, i, j));
 						outputPiece = evaluatingPiece;
 					}
 					break;
@@ -276,14 +247,12 @@ public class Chess
 				case 1:
 					if (diagOpponents1.indexOf(evaluatingPiece) != -1)
 					{
-//						checkList.add(new Piece(evaluatingPiece, i, j));
 						outputPiece = evaluatingPiece;
 					}
 					break;
 				default:
 					if (diagOpponents2.indexOf(evaluatingPiece) != -1)
 					{
-//						checkList.add(new Piece(evaluatingPiece, i, j));
 						outputPiece = evaluatingPiece;
 					}
 					break;
@@ -311,14 +280,12 @@ public class Chess
 				case 1:
 					if (diagOpponents1.indexOf(evaluatingPiece) != -1)
 					{
-//						checkList.add(new Piece(evaluatingPiece, i, j));
-					outputPiece = evaluatingPiece;
+						outputPiece = evaluatingPiece;
 					}
 					break;
 				default:
 					if (diagOpponents2.indexOf(evaluatingPiece) != -1)
 					{
-//						checkList.add(new Piece(evaluatingPiece, i, j));
 						outputPiece = evaluatingPiece;
 					}
 					break;
@@ -329,6 +296,8 @@ public class Chess
 
 		/*
 		 * Special cases for knights
+		 * 
+		 * This method is really dumb, but I guess it works fine
 		 */
 
 		j = king.getRow() - 2;
@@ -377,7 +346,7 @@ public class Chess
 		}
 
 		// Now check left and right
- 
+
 		j = king.getRow();
 		i = king.getCol() - 2;
 
@@ -423,7 +392,7 @@ public class Chess
 			}
 		}
 
-		// End of everything, no check found
+		// End of everything, outputPiece will reflect the solution
 		return outputPiece;
 	}
 }
